@@ -2,27 +2,54 @@ import React, { useState, useEffect } from 'react';
 import {
   RiskReport,
   RiskFinding,
+  ExtractedDocument,
   CATEGORY_LABELS_TR,
   SEVERITY_LABELS_TR,
+  LEGAL_COMPLIANCE_TR,
+  BENCHMARK_SERVICES,
+  QAAnswer,
   MANDATORY_LEGAL_DISCLAIMER,
 } from '../shared/types';
 import { getSettings, saveSettings, getLatestReport } from '../shared/storage';
-import { Shield, Settings, AlertTriangle, CheckCircle, RefreshCw, Copy, Check, Download } from 'lucide-react';
+import { askContractQuestion } from '../shared/qa';
+import {
+  Shield,
+  Settings,
+  AlertTriangle,
+  CheckCircle,
+  RefreshCw,
+  Copy,
+  Check,
+  Download,
+  Search,
+  Scale,
+  BarChart2,
+  HelpCircle,
+  Send,
+} from 'lucide-react';
 
 export const App: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'report' | 'qa' | 'benchmark'>('report');
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [report, setReport] = useState<RiskReport | null>(null);
+  const [cachedDoc, setCachedDoc] = useState<ExtractedDocument | null>(null);
   const [pageInfo, setPageInfo] = useState<{ title: string; domain: string; url: string; documentType: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [reportCopied, setReportCopied] = useState(false);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [expandedFindingId, setExpandedFindingId] = useState<string | null>(null);
   const [showRejected, setShowRejected] = useState(false);
 
+  // Q&A State
+  const [userQuestion, setUserQuestion] = useState('');
+  const [qaLoading, setQaLoading] = useState(false);
+  const [qaAnswer, setQaAnswer] = useState<QAAnswer | null>(null);
+
   useEffect(() => {
-    // Load cached report if any
+    // Load cached report
     getLatestReport().then((cached) => {
       if (cached) setReport(cached);
     });
@@ -44,7 +71,6 @@ export const App: React.FC = () => {
         }
       });
     } else {
-      // Mock tab info for Cypress / standalone dev
       setPageInfo({
         title: 'Örnek Kullanım Koşulları ve Gizlilik Sözleşmesi',
         domain: 'example-service.com',
@@ -95,6 +121,9 @@ export const App: React.FC = () => {
           return;
         }
         setReport(response.report);
+        if (response.document) {
+          setCachedDoc(response.document);
+        }
       });
     } else {
       // Fallback for Cypress/local testing without chrome runtime
@@ -104,6 +133,7 @@ export const App: React.FC = () => {
           const { extractPageDocument } = await import('../shared/extraction/extractor');
           const { runAnalysisPipeline } = await import('../shared/pipeline');
           const extracted = extractPageDocument(document);
+          setCachedDoc(extracted);
 
           let provider;
           if (settings.provider === 'mock') {
@@ -130,6 +160,59 @@ export const App: React.FC = () => {
     }
   };
 
+  // Feature 1: In-Page Interactive Highlighting & Smooth Scrolling
+  const handleHighlightInPage = (finding: RiskFinding) => {
+    setHighlightedId(finding.id);
+    if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.query) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        if (activeTab?.id) {
+          chrome.tabs.sendMessage(activeTab.id, {
+            type: 'HIGHLIGHT_CLAUSE',
+            quote: finding.originalQuote,
+            category: finding.category,
+            severity: finding.severity,
+          });
+        }
+      });
+    }
+    setTimeout(() => setHighlightedId(null), 3000);
+  };
+
+  // Feature 3: Evidence-Grounded Clause Q&A
+  const handleAskQuestion = async (customQ?: string) => {
+    const q = (customQ || userQuestion).trim();
+    if (!q) return;
+
+    setQaLoading(true);
+    setQaAnswer(null);
+
+    try {
+      const doc = cachedDoc || {
+        title: pageInfo?.title || 'Sözleşme',
+        url: pageInfo?.url || '',
+        domain: pageInfo?.domain || '',
+        documentType: 'Kullanım Koşulları',
+        rawText: report?.findings.map((f) => f.originalQuote).join('. ') || document.body.innerText,
+        characterCount: 1000,
+        chunks: [],
+        isTruncated: false,
+        timestamp: new Date().toISOString(),
+      };
+
+      const answer = await askContractQuestion(q, doc);
+      setQaAnswer(answer);
+    } catch {
+      setQaAnswer({
+        question: q,
+        answerTr: 'Soru işlenirken bir hata oluştu.',
+        foundInSource: false,
+      });
+    } finally {
+      setQaLoading(false);
+    }
+  };
+
   const handleCopyQuote = (quote: string, id: string) => {
     navigator.clipboard.writeText(quote);
     setCopiedId(id);
@@ -141,19 +224,20 @@ export const App: React.FC = () => {
     const lines = [
       `TERMSGUARD RİSK ANALİZ RAPORU`,
       `Belge: ${report.document.title} (${report.document.domain})`,
-      `Belge Türü: ${report.document.documentType}`,
       `Risk Skoru: ${report.overallRiskScore}/100`,
       `Durum: ${report.analysisStatus}`,
       `Açıklama: ${report.scoreExplanation}`,
       ``,
-      `DOĞRULANMIŞ BULGULAR (${report.findings.length}):`,
-      ...report.findings.map(
-        (f, idx) =>
+      `DOĞRULANMIŞ BULGULAR VE MEVZUAT UYUŞMAZLIĞI:`,
+      ...report.findings.map((f, idx) => {
+        const comp = LEGAL_COMPLIANCE_TR[f.category];
+        return (
           `${idx + 1}. [${SEVERITY_LABELS_TR[f.severity] || f.severity}] ${CATEGORY_LABELS_TR[f.category] || f.category}\n` +
           `   Alıntı: "${f.originalQuote}"\n` +
-          `   Açıklama: ${f.explanationTr}\n` +
-          `   Neden Önemli: ${f.whyItMattersTr}\n`
-      ),
+          `   Mevzuat Uyarısı: ${comp ? `${comp.law} ${comp.clause}` : 'Genel Haksız Şart'}\n` +
+          `   Açıklama: ${f.explanationTr}\n`
+        );
+      }),
       ``,
       `YASAL UYARI:`,
       report.disclaimer,
@@ -198,12 +282,7 @@ export const App: React.FC = () => {
           <span className="brand-title">TermsGuard</span>
         </div>
         <div className="header-actions">
-          <button
-            className="icon-btn"
-            id="open-settings-btn"
-            title="Ayarlar"
-            onClick={openOptions}
-          >
+          <button className="icon-btn" id="open-settings-btn" title="Ayarlar" onClick={openOptions}>
             <Settings size={18} />
           </button>
         </div>
@@ -211,8 +290,35 @@ export const App: React.FC = () => {
 
       {/* Main Content */}
       <div className="content-body">
+        {/* Navigation Tabs */}
+        {report && (
+          <nav className="tab-bar">
+            <button
+              className={`tab-btn ${activeTab === 'report' ? 'active' : ''}`}
+              onClick={() => setActiveTab('report')}
+            >
+              <Scale size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              Risk Raporu
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'qa' ? 'active' : ''}`}
+              onClick={() => setActiveTab('qa')}
+            >
+              <HelpCircle size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              Sözleşmeye Sor
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'benchmark' ? 'active' : ''}`}
+              onClick={() => setActiveTab('benchmark')}
+            >
+              <BarChart2 size={13} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              Sektör Kıyaslama
+            </button>
+          </nav>
+        )}
+
         {/* Page Context Card */}
-        {pageInfo && (
+        {pageInfo && activeTab === 'report' && (
           <div className="meta-card" id="page-context-card">
             <div className="meta-row">
               <span className="meta-label">Web Sitesi:</span>
@@ -228,24 +334,21 @@ export const App: React.FC = () => {
         )}
 
         {/* Action Button */}
-        <button
-          className="btn-primary"
-          id="analyze-page-btn"
-          disabled={loading}
-          onClick={handleStartAnalysis}
-        >
-          {loading ? (
-            <>
-              <RefreshCw size={16} className="animate-spin" />
-              <span>{statusMessage}</span>
-            </>
-          ) : (
-            <>
-              <Shield size={16} />
-              <span>Sayfayı Analiz Et</span>
-            </>
-          )}
-        </button>
+        {activeTab === 'report' && (
+          <button className="btn-primary" id="analyze-page-btn" disabled={loading} onClick={handleStartAnalysis}>
+            {loading ? (
+              <>
+                <RefreshCw size={16} className="animate-spin" />
+                <span>{statusMessage}</span>
+              </>
+            ) : (
+              <>
+                <Shield size={16} />
+                <span>Sayfayı Analiz Et</span>
+              </>
+            )}
+          </button>
+        )}
 
         {/* Error Alert */}
         {error && (
@@ -258,8 +361,8 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* Report Presentation */}
-        {report && (
+        {/* TAB 1: Main Risk Report Presentation */}
+        {report && activeTab === 'report' && (
           <div id="risk-report-container" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {/* Score Banner */}
             <div className="score-banner" id="score-banner">
@@ -287,15 +390,32 @@ export const App: React.FC = () => {
                 <div className="stat-label">Doğrulanan Kanıt</div>
               </div>
               <div className="stat-box">
-                <div className="stat-num" id="rejected-count" style={{ color: report.rejectedFindings.length > 0 ? '#fca5a5' : '#94a3b8' }}>
+                <div
+                  className="stat-num"
+                  id="rejected-count"
+                  style={{ color: report.rejectedFindings.length > 0 ? '#fca5a5' : '#94a3b8' }}
+                >
                   {report.rejectedFindings.length}
                 </div>
                 <div className="stat-label">Reddedilen İddia</div>
               </div>
               <div className="stat-box">
                 <div className="stat-num">
-                  <span className={`badge ${report.coverage.completeness === 'complete' ? 'badge-green' : 'badge-yellow'}`} id="coverage-badge">
-                    {report.coverage.completeness === 'complete' ? 'Tam' : report.coverage.completeness === 'partial' ? 'Kısmi' : 'Yetersiz'}
+                  <span
+                    className={`badge ${
+                      report.coverage.completeness === 'complete'
+                        ? 'badge-green'
+                        : report.coverage.completeness === 'partial'
+                        ? 'badge-yellow'
+                        : 'badge-yellow'
+                    }`}
+                    id="coverage-badge"
+                  >
+                    {report.coverage.completeness === 'complete'
+                      ? 'Tam'
+                      : report.coverage.completeness === 'partial'
+                      ? 'Kısmi'
+                      : 'Yetersiz'}
                   </span>
                 </div>
                 <div className="stat-label">Kapsam Durumu</div>
@@ -329,67 +449,88 @@ export const App: React.FC = () => {
                 </div>
               )}
 
-              {report.findings.map((f: RiskFinding) => (
-                <div className="finding-card" key={f.id} id={`finding-${f.id}`}>
-                  <div className="finding-header">
-                    <span className="finding-category">
-                      {CATEGORY_LABELS_TR[f.category] || f.category}
-                    </span>
-                    <span
-                      className={`badge ${
-                        f.severity === 'critical'
-                          ? 'badge-red'
-                          : f.severity === 'high'
-                          ? 'badge-red'
-                          : f.severity === 'medium'
-                          ? 'badge-yellow'
-                          : 'badge-blue'
-                      }`}
-                    >
-                      {SEVERITY_LABELS_TR[f.severity] || f.severity}
-                    </span>
-                  </div>
-
-                  {/* Verbatim Evidence Box */}
-                  <div className="evidence-box">
-                    <button
-                      className="icon-btn copy-quote-btn"
-                      title="Alıntıyı Kopyala"
-                      onClick={() => handleCopyQuote(f.originalQuote, f.id)}
-                    >
-                      {copiedId === f.id ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
-                    </button>
-                    "{f.originalQuote}"
-                  </div>
-
-                  <div className="finding-explanation">
-                    {f.explanationTr}
-                  </div>
-
-                  <div className="why-it-matters">
-                    <strong>Neden Önemli? </strong>
-                    {f.whyItMattersTr}
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#94a3b8' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10b981' }}>
-                      <CheckCircle size={12} /> Doğrulanmış Kanıt
-                    </span>
-                    <button
-                      style={{ background: 'transparent', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: '11px' }}
-                      onClick={() => setExpandedFindingId(expandedFindingId === f.id ? null : f.id)}
-                    >
-                      {expandedFindingId === f.id ? 'Bağlamı Gizle' : 'Kaynak Konumunu Gör'}
-                    </button>
-                  </div>
-
-                  {expandedFindingId === f.id && (
-                    <div style={{ fontSize: '11px', background: '#090d16', padding: '8px', borderRadius: '4px', color: '#94a3b8' }}>
-                      Bölüm: <code>{f.sourceChunkId}</code> | Karakter aralığı: [{f.sourceStartOffset} - {f.sourceEndOffset}]
+              {report.findings.map((f: RiskFinding) => {
+                const compliance = LEGAL_COMPLIANCE_TR[f.category];
+                return (
+                  <div className="finding-card" key={f.id} id={`finding-${f.id}`}>
+                    <div className="finding-header">
+                      <span className="finding-category">
+                        {CATEGORY_LABELS_TR[f.category] || f.category}
+                      </span>
+                      <span
+                        className={`badge ${
+                          f.severity === 'critical' || f.severity === 'high'
+                            ? 'badge-red'
+                            : f.severity === 'medium'
+                            ? 'badge-yellow'
+                            : 'badge-blue'
+                        }`}
+                      >
+                        {SEVERITY_LABELS_TR[f.severity] || f.severity}
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {/* Feature 2: 6502 Sayılı Tüketici Kanunu & KVKK Rozeti */}
+                    {compliance && (
+                      <div className="compliance-tag" title={compliance.noteTr}>
+                        <Scale size={12} />
+                        <span>{compliance.law} {compliance.clause}</span>
+                      </div>
+                    )}
+
+                    {/* Verbatim Evidence Box */}
+                    <div className="evidence-box">
+                      <button
+                        className="icon-btn copy-quote-btn"
+                        title="Alıntıyı Kopyala"
+                        onClick={() => handleCopyQuote(f.originalQuote, f.id)}
+                      >
+                        {copiedId === f.id ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
+                      </button>
+                      "{f.originalQuote}"
+                    </div>
+
+                    <div className="finding-explanation">{f.explanationTr}</div>
+
+                    <div className="why-it-matters">
+                      <strong>Neden Önemli? </strong>
+                      {f.whyItMattersTr}
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#94a3b8' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10b981' }}>
+                        <CheckCircle size={12} /> Doğrulanmış Kanıt
+                      </span>
+
+                      {/* Feature 1: Sayfada Vurgula ve Odaklan Butonu */}
+                      <button
+                        className="highlight-action-btn"
+                        title="Bu maddeyi doğrudan açık olan web sayfasında bulur ve kaydırır"
+                        onClick={() => handleHighlightInPage(f)}
+                      >
+                        <Search size={12} />
+                        <span>{highlightedId === f.id ? 'Vurgulandı!' : 'Sayfada Bul'}</span>
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', color: '#64748b' }}>
+                      <span>Bölüm: <code>{f.sourceChunkId}</code> [{f.sourceStartOffset} - {f.sourceEndOffset}]</span>
+                      <button
+                        style={{ background: 'transparent', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: '10px' }}
+                        onClick={() => setExpandedFindingId(expandedFindingId === f.id ? null : f.id)}
+                      >
+                        {expandedFindingId === f.id ? 'Bağlamı Gizle' : 'Detay'}
+                      </button>
+                    </div>
+
+                    {expandedFindingId === f.id && compliance && (
+                      <div style={{ fontSize: '11px', background: '#090d16', padding: '8px', borderRadius: '4px', color: '#93c5fd', lineHeight: '1.4' }}>
+                        <strong>Mevzuat Analizi:</strong> {compliance.noteTr}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Rejected Findings Accordion (Integrity Transparency) */}
@@ -423,24 +564,122 @@ export const App: React.FC = () => {
 
             {/* Export and Action Bar */}
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                className="btn-secondary"
-                id="copy-report-btn"
-                style={{ flex: 1, justifyContent: 'center' }}
-                onClick={handleCopyReport}
-              >
+              <button className="btn-secondary" id="copy-report-btn" style={{ flex: 1, justifyContent: 'center' }} onClick={handleCopyReport}>
                 {reportCopied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
                 <span>{reportCopied ? 'Kopyalandı' : 'Raporu Kopyala'}</span>
               </button>
-              <button
-                className="btn-secondary"
-                id="download-json-btn"
-                style={{ flex: 1, justifyContent: 'center' }}
-                onClick={handleDownloadJson}
-              >
+              <button className="btn-secondary" id="download-json-btn" style={{ flex: 1, justifyContent: 'center' }} onClick={handleDownloadJson}>
                 <Download size={14} />
                 <span>JSON İndir</span>
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: Sözleşmeye Soru Sor (Feature 3) */}
+        {activeTab === 'qa' && (
+          <div className="qa-container">
+            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+              Sözleşmeye dair aklınıza takılan soruları doğrudan metne sorun. Yanıtlar yalnızca sözleşmedeki gerçek alıntılarla verilir:
+            </div>
+
+            {/* Quick Pills */}
+            <div className="qa-pills">
+              <button className="qa-pill" onClick={() => { setUserQuestion('Paramı iade alabilir miyim?'); handleAskQuestion('Paramı iade alabilir miyim?'); }}>
+                💰 Para İadesi?
+              </button>
+              <button className="qa-pill" onClick={() => { setUserQuestion('Hesabımı nasıl kapatırım?'); handleAskQuestion('Hesabımı nasıl kapatırım?'); }}>
+                🚪 Hesap İptali?
+              </button>
+              <button className="qa-pill" onClick={() => { setUserQuestion('Verilerim kimlerle paylaşılıyor?'); handleAskQuestion('Verilerim kimlerle paylaşılıyor?'); }}>
+                🛡️ Veri Paylaşımı?
+              </button>
+              <button className="qa-pill" onClick={() => { setUserQuestion('Uyuşmazlıkta mahkemeye gidebilir miyim?'); handleAskQuestion('Uyuşmazlıkta mahkemeye gidebilir miyim?'); }}>
+                ⚖️ Tahkim / Mahkeme?
+              </button>
+            </div>
+
+            {/* Input Box */}
+            <div className="qa-input-box">
+              <input
+                type="text"
+                className="qa-input"
+                placeholder="Örn: Aboneliğim otomatik yenilenir mi?"
+                value={userQuestion}
+                onChange={(e) => setUserQuestion(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
+              />
+              <button className="btn-primary" style={{ padding: '8px 14px' }} disabled={qaLoading} onClick={() => handleAskQuestion()}>
+                {qaLoading ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
+              </button>
+            </div>
+
+            {/* Answer Display */}
+            {qaAnswer && (
+              <div className="qa-answer-card">
+                <div style={{ fontWeight: 600, color: '#60a5fa' }}>{qaAnswer.question}</div>
+                <div style={{ color: '#f8fafc' }}>{qaAnswer.answerTr}</div>
+                {qaAnswer.relevantQuote && (
+                  <div className="evidence-box" style={{ marginTop: '4px' }}>
+                    "{qaAnswer.relevantQuote}"
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: Sektör Kıyaslama Radarı (Feature 4) */}
+        {activeTab === 'benchmark' && report && (
+          <div className="benchmark-container">
+            <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: '1.4' }}>
+              İncelenen bu sözleşmenin risk profili, sektördeki küresel teknoloji platformlarının değerlendirme veritabanıyla kıyaslanmıştır:
+            </div>
+
+            <div style={{ background: '#090d16', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '8px' }}>
+                Mevcut Belge: <strong>{report.document.domain}</strong> ({report.overallRiskScore}/100)
+              </div>
+              <div className="benchmark-row" style={{ marginBottom: '14px' }}>
+                <span className="benchmark-name" style={{ color: '#60a5fa', fontWeight: 700 }}>
+                  Bu Sözleşme
+                </span>
+                <div className="benchmark-bar-bg">
+                  <div
+                    className="benchmark-bar-fill"
+                    style={{
+                      width: `${report.overallRiskScore}%`,
+                      background: report.overallRiskScore > 70 ? '#ef4444' : report.overallRiskScore > 40 ? '#f59e0b' : '#10b981',
+                    }}
+                  />
+                </div>
+                <span className="benchmark-score" style={{ color: '#f8fafc' }}>{report.overallRiskScore}/100</span>
+              </div>
+
+              <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '6px' }}>
+                Sektör Karşılaştırma Referansları:
+              </div>
+
+              {BENCHMARK_SERVICES.map((srv) => (
+                <div className="benchmark-row" key={srv.name} style={{ margin: '6px 0' }}>
+                  <span className="benchmark-name" title={srv.category}>{srv.name}</span>
+                  <div className="benchmark-bar-bg">
+                    <div
+                      className="benchmark-bar-fill"
+                      style={{
+                        width: `${srv.score}%`,
+                        background: srv.score > 70 ? '#dc2626' : srv.score > 50 ? '#d97706' : '#059669',
+                        opacity: 0.7,
+                      }}
+                    />
+                  </div>
+                  <span className="benchmark-score" style={{ color: '#94a3b8', fontSize: '11px' }}>{srv.score}/100</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: '12px', background: 'rgba(59, 130, 246, 0.1)', padding: '10px', borderRadius: '6px', border: '1px solid rgba(59, 130, 246, 0.3)', color: '#bfdbfe' }}>
+              <strong>Kıyaslama Özeti:</strong> Bu sözleşme {report.overallRiskScore > 72 ? 'sektör ortalamasından daha katı ve kısıtlayıcı' : 'sektör ortalamasına kıyasla daha dengeli'} maddeler içermektedir.
             </div>
           </div>
         )}
@@ -463,17 +702,8 @@ export const App: React.FC = () => {
               Sayfadaki metin dışında şifreler, çerezler veya kimlik bilgileri asla okunmaz ve iletilmez. Bu işlem yalnızca siz "Sayfayı Analiz Et" düğmesine bastığınızda gerçekleşir.
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
-              <button
-                className="btn-secondary"
-                onClick={() => setShowConsentModal(false)}
-              >
-                İptal
-              </button>
-              <button
-                className="btn-primary"
-                id="confirm-consent-btn"
-                onClick={handleConfirmConsent}
-              >
+              <button className="btn-secondary" onClick={() => setShowConsentModal(false)}>İptal</button>
+              <button className="btn-primary" id="confirm-consent-btn" onClick={handleConfirmConsent}>
                 Onaylıyorum ve Başlat
               </button>
             </div>

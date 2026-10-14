@@ -24,6 +24,16 @@
 7. **Dürüst Belirsizlik ve Kapsam Bildirimi:** Sayfa metni yetersiz (<250 karakter) veya dinamik içerikle engellenmişse yapay zeka uydurma tahmin yapmaz; arayüzde *"Yetersiz veri"* uyarısı gösterir.
 8. **Dışa Aktarma ve Kopyalama:** Doğrulanmış risk raporunu tek tıkla yapılandırılmış JSON veya Türkçe metin formatında kopyalama ve indirme imkanı.
 
+### 🌟 Bizi Standart Projelerden Ayıran 4 İnovatif Özellik:
+1. **🔍 Sayfada Canlı Vurgula ve Odaklan (In-Page Interactive Highlight):**  
+   Popup üzerindeki herhangi bir risk maddesinde *"Sayfada Bul"* butonuna tıklandığında, arkadaki web sayfası **otomatik olarak o maddenin bulunduğu paragrafa yumuşakça kayar (smooth scroll)** ve cümleyi parlayan animasyonlu bir rozetle canlı olarak vurgular.
+2. **⚖️ 6502 Sayılı Tüketici Kanunu & KVKK Uyuşmazlık Radarı:**  
+   Klasik genel geçer yanıtlar yerine maddeler, Türk Hukuku mevzuatıyla (**6502 s. Kanun Md. 5 Haksız Şartlar, Abonelik Sözleşmeleri Yönetmeliği Md. 13, 6698 s. KVKK**) doğrudan eşleştirilir ve yasal uyuşmazlık şüphesi rozeti gösterilir.
+3. **💬 Sözleşmeye Soru Sor (Evidence-Grounded Clause Q&A):**  
+   Kullanıcı *"Paramı iade alabilir miyim?"* veya *"Hesabımı kapatabilir miyim?"* gibi serbest sorular sorabilir. Sistem genel tavsiye vermek yerine doğrudan sözleşme metnindeki **ilgili cümleyi alıntılayarak** kesin kanıtla yanıtlar.
+4. **📊 Sektör Kıyaslama Radarı (Benchmark Index):**  
+   İncelenen sözleşmeyi sektördeki popüler platformların (Spotify, Discord, OpenAI, Apple, Netflix, GitHub) risk indeksleriyle karşılaştırmalı görsel çubuk grafiğinde kıyaslar.
+
 ---
 
 ## 2. Mimari ve Veri Akışı
