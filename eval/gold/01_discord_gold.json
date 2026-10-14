@@ -1,0 +1,41 @@
+{
+  "fixtureId": "discord_tos",
+  "documentName": "Discord Terms of Service",
+  "goldClauses": [
+    {
+      "clauseId": "discord_g1",
+      "category": "arbitration_jurisdiction",
+      "severity": "high",
+      "exactQuote": "You and Discord agree that any dispute, claim, or controversy arising out of or relating to these Terms or the use of the Services shall be settled exclusively by binding arbitration administered by the American Arbitration Association under its Commercial Arbitration Rules.",
+      "rationaleTr": "Kullanıcıyı mahkeme yerine özel tahkim kuruluna başvurmaya mecbur bırakarak tüketici haklarını kısıtlar."
+    },
+    {
+      "clauseId": "discord_g2",
+      "category": "waive_class_action",
+      "severity": "critical",
+      "exactQuote": "You agree that you and Discord are each waiving the right to a trial by jury or to participate as a plaintiff or class member in any purported class action or representative proceeding.",
+      "rationaleTr": "Toplu dava açma ve grup temsiline katılma hakkından feragat ettirir."
+    },
+    {
+      "clauseId": "discord_g3",
+      "category": "unilateral_changes",
+      "severity": "medium",
+      "exactQuote": "We reserve the right to modify these terms and update our services from time to time at our sole discretion.",
+      "rationaleTr": "Şartların şirket tarafından tek taraflı değiştirilebilmesini sağlar."
+    },
+    {
+      "clauseId": "discord_g4",
+      "category": "cancellation_termination",
+      "severity": "medium",
+      "exactQuote": "We may terminate or suspend your account and access to the Services at any time, with or without cause, and without prior notice or liability to you, at our sole discretion.",
+      "rationaleTr": "Gerekçesiz ve ihbarsız hesap kapatma yetkisi tanır."
+    },
+    {
+      "clauseId": "discord_g5",
+      "category": "liability_limitation",
+      "severity": "high",
+      "exactQuote": "Discord's total cumulative liability for all claims shall not exceed fifty dollars ($50) or the amount you paid Discord in the past six months.",
+      "rationaleTr": "Maddi ve manevi tazminat tavanını 50 dolar gibi sembolik bir tutarla sınırlandırır."
+    }
+  ]
+}

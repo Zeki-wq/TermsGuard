@@ -1,0 +1,27 @@
+{
+  "fixtureId": "x_twitter_terms",
+  "documentName": "X (formerly Twitter) Terms of Service",
+  "goldClauses": [
+    {
+      "clauseId": "x_g1",
+      "category": "ip_content_rights",
+      "severity": "medium",
+      "exactQuote": "By submitting, posting or displaying Content on or through the Services, you grant us a worldwide, non-exclusive, royalty-free license (with the right to sublicense) to use, copy, reproduce, process, adapt, modify, publish, transmit, display, upload, and distribute such Content in any and all media or distribution methods now known or later developed.",
+      "rationaleTr": "Paylaşılan kullanıcı içerikleri üzerinde alt lisans verme hakkı dahil dünya çapında ve telifsiz hak devreder."
+    },
+    {
+      "clauseId": "x_g2",
+      "category": "unilateral_changes",
+      "severity": "medium",
+      "exactQuote": "We may revise these Terms from time to time. The changes will not be retroactive, and the most current version of the Terms will govern our relationship with you.",
+      "rationaleTr": "Şartların tek taraflı değiştirilmesi ve kullanımın devamı halinde onaylanmış sayılması."
+    },
+    {
+      "clauseId": "x_g3",
+      "category": "liability_limitation",
+      "severity": "high",
+      "exactQuote": "TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE X ENTITIES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.",
+      "rationaleTr": "Veri kaybı ve dolaylı zararlar dahil tüm sorumlulukların reddi."
+    }
+  ]
+}

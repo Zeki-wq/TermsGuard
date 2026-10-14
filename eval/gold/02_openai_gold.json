@@ -1,0 +1,27 @@
+{
+  "fixtureId": "openai_terms",
+  "documentName": "OpenAI Terms of Use",
+  "goldClauses": [
+    {
+      "clauseId": "openai_g1",
+      "category": "arbitration_jurisdiction",
+      "severity": "high",
+      "exactQuote": "You and OpenAI agree to resolve any claims relating to these Terms or our Services through final and binding arbitration rather than in court, except that you may assert claims in small claims court if your claims qualify.",
+      "rationaleTr": "Mahkemede dava açma hakkını kaldırarak zorunlu tahkim mecburiyeti getirir."
+    },
+    {
+      "clauseId": "openai_g2",
+      "category": "waive_class_action",
+      "severity": "critical",
+      "exactQuote": "You and OpenAI agree that any dispute resolution proceedings must be brought in an individual capacity, and not as a plaintiff or class member in any class, consolidated, or representative proceeding.",
+      "rationaleTr": "Toplu davalara katılımı yasaklar, uyuşmazlıkları yalnızca bireysel takiple sınırlar."
+    },
+    {
+      "clauseId": "openai_g3",
+      "category": "liability_limitation",
+      "severity": "high",
+      "exactQuote": "Our aggregate liability under these terms will not exceed the greater of one hundred dollars ($100) or the amount you paid us for the service in the twelve months before the claim arose.",
+      "rationaleTr": "Olası ağır zararlarda dahi şirketin toplam sorumluluğunu 100 dolar veya son 1 yıllık ücretle kısıtlar."
+    }
+  ]
+}

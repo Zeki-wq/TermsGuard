@@ -1,0 +1,329 @@
+{
+  "timestamp": "2026-10-14T17:43:56.241Z",
+  "providerUsed": "Deterministik Mock Sağlayıcı (Test & Çevrimdışı Değerlendirme Modu)",
+  "documentCount": 5,
+  "totalGoldClauses": 17,
+  "totalPredictedFindings": 13,
+  "macroPrecision": 0.45,
+  "macroRecall": 0.24,
+  "macroF1": 0.3044444444444444,
+  "microPrecision": 0.3333333333333333,
+  "microRecall": 0.23529411764705882,
+  "microF1": 0.27586206896551724,
+  "overallQuotationValidity": 1,
+  "injectionResistanceScore": 100,
+  "documents": [
+    {
+      "documentId": "discord_tos",
+      "documentName": "Discord Terms of Service",
+      "sourceUrl": "https://discord.com/terms",
+      "retrievalDate": "2026-03-01",
+      "goldClauseCount": 5,
+      "predictedFindingCount": 5,
+      "truePositives": 1,
+      "falsePositives": 3,
+      "falseNegatives": 4,
+      "precision": 0.25,
+      "recall": 0.2,
+      "f1": 0.22222222222222224,
+      "quotationValidityRate": 1,
+      "overallRiskScore": 93,
+      "matches": [
+        {
+          "goldClause": {
+            "clauseId": "discord_g3",
+            "category": "unilateral_changes",
+            "severity": "medium",
+            "exactQuote": "We reserve the right to modify these terms and update our services from time to time at our sole discretion.",
+            "rationaleTr": "Şartların şirket tarafından tek taraflı değiştirilebilmesini sağlar."
+          },
+          "matchedFinding": {
+            "id": "mock_f_2",
+            "category": "unilateral_changes",
+            "severity": "medium",
+            "originalQuote": "We reserve the right to modify these terms and update our services from time to time at our sole discretion.",
+            "explanationTr": "Şirketin sözleşme koşullarını önceden haber vermeksizin tek taraflı değiştirme hakkı saklı tutuluyor.",
+            "whyItMattersTr": "Kullanım koşulları veya ücretlendirme siz farkında olmadan aleyhinize değişebilir.",
+            "sourceChunkId": "chunk_0",
+            "sourceStartOffset": 690,
+            "sourceEndOffset": 798,
+            "confidence": 0.95,
+            "verificationStatus": "verified"
+          }
+        },
+        {
+          "goldClause": {
+            "clauseId": "discord_g3",
+            "category": "unilateral_changes",
+            "severity": "medium",
+            "exactQuote": "We reserve the right to modify these terms and update our services from time to time at our sole discretion.",
+            "rationaleTr": "Şartların şirket tarafından tek taraflı değiştirilebilmesini sağlar."
+          },
+          "matchedFinding": {
+            "id": "mock_f_5",
+            "category": "cancellation_termination",
+            "severity": "medium",
+            "originalQuote": "We reserve the right to modify these terms and update our services from time to time at our sole discretion.",
+            "explanationTr": "Şirketin herhangi bir gerekçe göstermeksizin hesabınızı kapatabileceğini veya hizmeti kesebileceğini belirten madde.",
+            "whyItMattersTr": "Yatırım yaptığınız veya veri depoladığınız bir hesaba erişiminiz aniden ve gerekçesiz sonlandırılabilir.",
+            "sourceChunkId": "chunk_0",
+            "sourceStartOffset": 690,
+            "sourceEndOffset": 798,
+            "confidence": 0.95,
+            "verificationStatus": "verified"
+          }
+        }
+      ],
+      "unmatchedPredictions": [
+        {
+          "id": "mock_f_1",
+          "category": "arbitration_jurisdiction",
+          "severity": "high",
+          "originalQuote": "Settling Disputes: Binding Arbitration and Class Action Waiver.",
+          "explanationTr": "Kullanıcının mahkemeye başvurma hakkını sınırlandırıp zorunlu tahkimi zorunlu kılan madde.",
+          "whyItMattersTr": "Bir uyuşmazlık halinde tüketici mahkemeleri yerine pahalı ve taraflı olabilen tahkim süreçlerine mecbur bırakılabilirsiniz.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 125,
+          "sourceEndOffset": 188,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        },
+        {
+          "id": "mock_f_3",
+          "category": "liability_limitation",
+          "severity": "high",
+          "originalQuote": "Limitation of Liability.",
+          "explanationTr": "Hizmet kesintisi veya veri kaybı durumlarında şirketin yasal sorumluluğunu tamamen veya büyük oranda reddettiği madde.",
+          "whyItMattersTr": "Hizmet kaynaklı bir zarara uğrarsanız veya veriniz kaybolursa tazminat talep etmeniz engellenebilir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 1162,
+          "sourceEndOffset": 1186,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        },
+        {
+          "id": "mock_f_4",
+          "category": "waive_class_action",
+          "severity": "critical",
+          "originalQuote": "Settling Disputes: Binding Arbitration and Class Action Waiver.",
+          "explanationTr": "Toplu dava veya grup temsili yoluyla hak arama hakkından feragat maddesi.",
+          "whyItMattersTr": "Küçük meblağlı mağduriyetlerde tek başınıza dava açmanız ekonomik olmayacağı için hakkınızı aramanız fiilen engellenir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 125,
+          "sourceEndOffset": 188,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        }
+      ]
+    },
+    {
+      "documentId": "openai_terms",
+      "documentName": "OpenAI Terms of Use",
+      "sourceUrl": "https://openai.com/policies/terms-of-use/",
+      "retrievalDate": "2026-02-15",
+      "goldClauseCount": 3,
+      "predictedFindingCount": 3,
+      "truePositives": 0,
+      "falsePositives": 3,
+      "falseNegatives": 3,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "quotationValidityRate": 1,
+      "overallRiskScore": 88,
+      "matches": [],
+      "unmatchedPredictions": [
+        {
+          "id": "mock_f_1",
+          "category": "arbitration_jurisdiction",
+          "severity": "high",
+          "originalQuote": "Dispute Resolution: Mandatory Arbitration.",
+          "explanationTr": "Kullanıcının mahkemeye başvurma hakkını sınırlandırıp zorunlu tahkimi zorunlu kılan madde.",
+          "whyItMattersTr": "Bir uyuşmazlık halinde tüketici mahkemeleri yerine pahalı ve taraflı olabilen tahkim süreçlerine mecbur bırakılabilirsiniz.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 185,
+          "sourceEndOffset": 227,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        },
+        {
+          "id": "mock_f_2",
+          "category": "liability_limitation",
+          "severity": "high",
+          "originalQuote": "Limitation of Liability.",
+          "explanationTr": "Hizmet kesintisi veya veri kaybı durumlarında şirketin yasal sorumluluğunu tamamen veya büyük oranda reddettiği madde.",
+          "whyItMattersTr": "Hizmet kaynaklı bir zarara uğrarsanız veya veriniz kaybolursa tazminat talep etmeniz engellenebilir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 681,
+          "sourceEndOffset": 705,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        },
+        {
+          "id": "mock_f_3",
+          "category": "waive_class_action",
+          "severity": "critical",
+          "originalQuote": "Class Action Waiver.",
+          "explanationTr": "Toplu dava veya grup temsili yoluyla hak arama hakkından feragat maddesi.",
+          "whyItMattersTr": "Küçük meblağlı mağduriyetlerde tek başınıza dava açmanız ekonomik olmayacağı için hakkınızı aramanız fiilen engellenir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 455,
+          "sourceEndOffset": 475,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        }
+      ]
+    },
+    {
+      "documentId": "spotify_terms",
+      "documentName": "Spotify Terms and Conditions of Use",
+      "sourceUrl": "https://www.spotify.com/us/legal/end-user-agreement/",
+      "retrievalDate": "2026-01-20",
+      "goldClauseCount": 3,
+      "predictedFindingCount": 2,
+      "truePositives": 1,
+      "falsePositives": 1,
+      "falseNegatives": 2,
+      "precision": 0.5,
+      "recall": 0.3333333333333333,
+      "f1": 0.4,
+      "quotationValidityRate": 1,
+      "overallRiskScore": 70,
+      "matches": [
+        {
+          "goldClause": {
+            "clauseId": "spotify_g1",
+            "category": "payment_auto_renewal",
+            "severity": "high",
+            "exactQuote": "If you purchase a Paid Subscription, your payment to Spotify will automatically renew at the end of the applicable subscription period, unless you cancel your Paid Subscription before the end of the current subscription period.",
+            "rationaleTr": "Aboneliğin önceden iptal edilmemesi durumunda otomatik olarak yenilenmesini ve hesaptan para çekilmesini sağlar."
+          },
+          "matchedFinding": {
+            "id": "mock_f_2",
+            "category": "payment_auto_renewal",
+            "severity": "high",
+            "originalQuote": "If you purchase a Paid Subscription, your payment to Spotify will automatically renew at the end of the applicable subscription period, unless you cancel your Paid Subscription before the end of the current subscription period.",
+            "explanationTr": "Aboneliğin otomatik yenilenmesi veya iptal/iade hakkının kısıtlandığı ödeme maddesi.",
+            "whyItMattersTr": "Hizmeti kullanmasanız dahi iptal etmeyi unuttuğunuzda kartınızdan otomatik tahsilat yapılabilir.",
+            "sourceChunkId": "chunk_0",
+            "sourceStartOffset": 105,
+            "sourceEndOffset": 332,
+            "confidence": 0.95,
+            "verificationStatus": "verified"
+          }
+        }
+      ],
+      "unmatchedPredictions": [
+        {
+          "id": "mock_f_1",
+          "category": "liability_limitation",
+          "severity": "high",
+          "originalQuote": "Limitation of Liability.",
+          "explanationTr": "Hizmet kesintisi veya veri kaybı durumlarında şirketin yasal sorumluluğunu tamamen veya büyük oranda reddettiği madde.",
+          "whyItMattersTr": "Hizmet kaynaklı bir zarara uğrarsanız veya veriniz kaybolursa tazminat talep etmeniz engellenebilir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 858,
+          "sourceEndOffset": 882,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        }
+      ]
+    },
+    {
+      "documentId": "github_terms",
+      "documentName": "GitHub Terms of Service",
+      "sourceUrl": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+      "retrievalDate": "2026-02-10",
+      "goldClauseCount": 3,
+      "predictedFindingCount": 2,
+      "truePositives": 1,
+      "falsePositives": 1,
+      "falseNegatives": 2,
+      "precision": 0.5,
+      "recall": 0.3333333333333333,
+      "f1": 0.4,
+      "quotationValidityRate": 1,
+      "overallRiskScore": 59,
+      "matches": [
+        {
+          "goldClause": {
+            "clauseId": "github_g2",
+            "category": "ip_content_rights",
+            "severity": "medium",
+            "exactQuote": "You grant us and our legal successors the worldwide, royalty-free, and non-exclusive license to use, display, reproduce, adapt, and distribute your User-Generated Content on the Service as permitted through the Service's functionality.",
+            "rationaleTr": "Kullanıcı içeriği üzerinde geniş, telifsiz ve küresel lisans hakkı alınmaktadır."
+          },
+          "matchedFinding": {
+            "id": "mock_f_2",
+            "category": "ip_content_rights",
+            "severity": "medium",
+            "originalQuote": "User-Generated Content\nYou grant us and our legal successors the worldwide, royalty-free, and non-exclusive license to use, display, reproduce, adapt, and distribute your User-Generated Content on the Service as permitted through the Service's functionality.",
+            "explanationTr": "Platforma yüklediğiniz içerikler üzerinde şirkete dünya çapında, geri alınamaz ve ücretsiz kullanım hakkı veren madde.",
+            "whyItMattersTr": "Ürettiğiniz eser veya veriler ticari amaçlarla bilginiz dışında kullanılabilir.",
+            "sourceChunkId": "chunk_0",
+            "sourceStartOffset": 350,
+            "sourceEndOffset": 608,
+            "confidence": 0.95,
+            "verificationStatus": "verified"
+          }
+        }
+      ],
+      "unmatchedPredictions": [
+        {
+          "id": "mock_f_1",
+          "category": "liability_limitation",
+          "severity": "high",
+          "originalQuote": "Limitation of Liability\nYou understand and agree that we will not be liable to you or any third party for any loss of profits, use, goodwill, or data, or for any incidental, indirect, special, consequential, or exemplary damages, however arising.",
+          "explanationTr": "Hizmet kesintisi veya veri kaybı durumlarında şirketin yasal sorumluluğunu tamamen veya büyük oranda reddettiği madde.",
+          "whyItMattersTr": "Hizmet kaynaklı bir zarara uğrarsanız veya veriniz kaybolursa tazminat talep etmeniz engellenebilir.",
+          "sourceChunkId": "chunk_0",
+          "sourceStartOffset": 900,
+          "sourceEndOffset": 1146,
+          "confidence": 0.95,
+          "verificationStatus": "verified"
+        }
+      ]
+    },
+    {
+      "documentId": "x_twitter_terms",
+      "documentName": "X (formerly Twitter) Terms of Service",
+      "sourceUrl": "https://x.com/en/tos",
+      "retrievalDate": "2026-01-15",
+      "goldClauseCount": 3,
+      "predictedFindingCount": 1,
+      "truePositives": 1,
+      "falsePositives": 0,
+      "falseNegatives": 2,
+      "precision": 1,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "quotationValidityRate": 1,
+      "overallRiskScore": 45,
+      "matches": [
+        {
+          "goldClause": {
+            "clauseId": "x_g3",
+            "category": "liability_limitation",
+            "severity": "high",
+            "exactQuote": "TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE X ENTITIES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.",
+            "rationaleTr": "Veri kaybı ve dolaylı zararlar dahil tüm sorumlulukların reddi."
+          },
+          "matchedFinding": {
+            "id": "mock_f_1",
+            "category": "liability_limitation",
+            "severity": "high",
+            "originalQuote": "Limitation of Liability\nTO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE X ENTITIES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.",
+            "explanationTr": "Hizmet kesintisi veya veri kaybı durumlarında şirketin yasal sorumluluğunu tamamen veya büyük oranda reddettiği madde.",
+            "whyItMattersTr": "Hizmet kaynaklı bir zarara uğrarsanız veya veriniz kaybolursa tazminat talep etmeniz engellenebilir.",
+            "sourceChunkId": "chunk_0",
+            "sourceStartOffset": 883,
+            "sourceEndOffset": 1207,
+            "confidence": 0.95,
+            "verificationStatus": "verified"
+          }
+        }
+      ],
+      "unmatchedPredictions": []
+    }
+  ]
+}

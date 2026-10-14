@@ -1,0 +1,8 @@
+{
+  "id": "openai_terms",
+  "name": "OpenAI Terms of Use",
+  "sourceUrl": "https://openai.com/policies/terms-of-use/",
+  "retrievalDate": "2026-02-15",
+  "documentType": "Kullanım Koşulları (Terms of Use)",
+  "text": "OpenAI Terms of Use. Last updated: February 2026.\n\nThank you for using OpenAI! These Terms of Use apply to your use of ChatGPT, DALL-E, and OpenAI's other services for individuals.\n\n1. Dispute Resolution: Mandatory Arbitration.\nYou and OpenAI agree to resolve any claims relating to these Terms or our Services through final and binding arbitration rather than in court, except that you may assert claims in small claims court if your claims qualify.\n\n2. Class Action Waiver.\nYou and OpenAI agree that any dispute resolution proceedings must be brought in an individual capacity, and not as a plaintiff or class member in any class, consolidated, or representative proceeding.\n\n3. Limitation of Liability.\nNeither OpenAI nor our affiliates or licensors will be liable for any indirect, incidental, special, consequential, or exemplary damages, including damages for loss of profits, goodwill, use, or data. Our aggregate liability under these terms will not exceed the greater of one hundred dollars ($100) or the amount you paid us for the service in the twelve months before the claim arose.\n\n4. Indemnification.\nYou will defend, indemnify, and hold harmless OpenAI, its affiliates, and their personnel from and against all liabilities, damages, losses, costs, and expenses (including reasonable attorneys' fees) relating to any third-party claim arising out of or related to your use of the Services or violation of these Terms."
+}

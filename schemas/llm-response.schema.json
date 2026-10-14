@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TermsGuardLLMResponse",
+  "type": "object",
+  "required": ["findings", "uncertainties", "summaryTr"],
+  "additionalProperties": false,
+  "properties": {
+    "documentType": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "summaryTr": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "severity",
+          "originalQuote",
+          "explanationTr",
+          "whyItMattersTr"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "maxLength": 64 },
+          "category": {
+            "type": "string",
+            "enum": [
+              "arbitration_jurisdiction",
+              "unilateral_changes",
+              "data_sharing_privacy",
+              "liability_limitation",
+              "ip_content_rights",
+              "payment_auto_renewal",
+              "cancellation_termination",
+              "waive_class_action",
+              "other_risk"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "originalQuote": { "type": "string", "minLength": 5, "maxLength": 3000 },
+          "explanationTr": { "type": "string", "minLength": 5, "maxLength": 2000 },
+          "whyItMattersTr": { "type": "string", "minLength": 5, "maxLength": 2000 },
+          "sourceChunkId": { "type": "string", "maxLength": 64 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 1000 }
+    }
+  }
+}

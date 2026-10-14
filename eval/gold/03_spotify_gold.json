@@ -1,0 +1,27 @@
+{
+  "fixtureId": "spotify_terms",
+  "documentName": "Spotify Terms and Conditions of Use",
+  "goldClauses": [
+    {
+      "clauseId": "spotify_g1",
+      "category": "payment_auto_renewal",
+      "severity": "high",
+      "exactQuote": "If you purchase a Paid Subscription, your payment to Spotify will automatically renew at the end of the applicable subscription period, unless you cancel your Paid Subscription before the end of the current subscription period.",
+      "rationaleTr": "Aboneliğin önceden iptal edilmemesi durumunda otomatik olarak yenilenmesini ve hesaptan para çekilmesini sağlar."
+    },
+    {
+      "clauseId": "spotify_g2",
+      "category": "cancellation_termination",
+      "severity": "medium",
+      "exactQuote": "We do not provide refunds or credits for any partial subscription periods.",
+      "rationaleTr": "Dönem ortası iptallerde veya hizmetin kullanılmadığı durumlarda kısmi para iadesini engeller."
+    },
+    {
+      "clauseId": "spotify_g3",
+      "category": "liability_limitation",
+      "severity": "high",
+      "exactQuote": "You agree that your sole and exclusive remedy for any problems or dissatisfaction with the Spotify Service is to uninstall the Spotify software and to stop using the Spotify Service.",
+      "rationaleTr": "Hizmet kusurlarında kullanıcının tek yasal başvuru yolunun uygulamayı silmek olduğunu ileri sürerek tazminat taleplerini reddeder."
+    }
+  ]
+}

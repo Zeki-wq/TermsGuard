@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TermsGuardRiskReport",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "document",
+    "analysisStatus",
+    "overallRiskScore",
+    "scoreExplanation",
+    "coverage",
+    "findings",
+    "rejectedFindings",
+    "uncertainties",
+    "disclaimer"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "document": {
+      "type": "object",
+      "required": ["title", "url", "domain", "documentType", "characterCount", "chunkCount"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "maxLength": 500 },
+        "url": { "type": "string", "maxLength": 2048 },
+        "domain": { "type": "string", "maxLength": 255 },
+        "documentType": { "type": "string", "maxLength": 100 },
+        "characterCount": { "type": "integer", "minimum": 0 },
+        "chunkCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "analysisStatus": {
+      "type": "string",
+      "enum": ["success", "uncertain", "incomplete", "failed"]
+    },
+    "overallRiskScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "scoreExplanation": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["completeness", "explanationTr", "truncated"],
+      "additionalProperties": false,
+      "properties": {
+        "completeness": {
+          "type": "string",
+          "enum": ["complete", "partial", "insufficient"]
+        },
+        "explanationTr": { "type": "string", "maxLength": 1000 },
+        "truncated": { "type": "boolean" }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "severity",
+          "originalQuote",
+          "explanationTr",
+          "whyItMattersTr",
+          "sourceChunkId",
+          "sourceStartOffset",
+          "sourceEndOffset",
+          "confidence",
+          "verificationStatus"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "maxLength": 64 },
+          "category": {
+            "type": "string",
+            "enum": [
+              "arbitration_jurisdiction",
+              "unilateral_changes",
+              "data_sharing_privacy",
+              "liability_limitation",
+              "ip_content_rights",
+              "payment_auto_renewal",
+              "cancellation_termination",
+              "waive_class_action",
+              "other_risk"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "originalQuote": { "type": "string", "minLength": 5, "maxLength": 3000 },
+          "explanationTr": { "type": "string", "minLength": 5, "maxLength": 2000 },
+          "whyItMattersTr": { "type": "string", "minLength": 5, "maxLength": 2000 },
+          "sourceChunkId": { "type": "string", "maxLength": 64 },
+          "sourceStartOffset": { "type": "integer", "minimum": 0 },
+          "sourceEndOffset": { "type": "integer", "minimum": 0 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "verificationStatus": {
+            "type": "string",
+            "enum": ["verified"]
+          }
+        }
+      }
+    },
+    "rejectedFindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["originalQuote", "reason", "claimedCategory", "claimedSeverity"],
+        "additionalProperties": false,
+        "properties": {
+          "originalQuote": { "type": "string" },
+          "reason": { "type": "string", "maxLength": 500 },
+          "claimedCategory": { "type": "string" },
+          "claimedSeverity": { "type": "string" }
+        }
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 1000 }
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 20
+    }
+  }
+}

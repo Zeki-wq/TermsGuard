@@ -1,0 +1,27 @@
+{
+  "fixtureId": "github_terms",
+  "documentName": "GitHub Terms of Service",
+  "goldClauses": [
+    {
+      "clauseId": "github_g1",
+      "category": "cancellation_termination",
+      "severity": "medium",
+      "exactQuote": "GitHub has the right to suspend or terminate your access to all or any part of the Website at any time, with or without cause, with or without notice, effective immediately.",
+      "rationaleTr": "Gerekçesiz, bildirimsiz ve anında hesap feshetme hakkı saklı tutuluyor."
+    },
+    {
+      "clauseId": "github_g2",
+      "category": "ip_content_rights",
+      "severity": "medium",
+      "exactQuote": "You grant us and our legal successors the worldwide, royalty-free, and non-exclusive license to use, display, reproduce, adapt, and distribute your User-Generated Content on the Service as permitted through the Service's functionality.",
+      "rationaleTr": "Kullanıcı içeriği üzerinde geniş, telifsiz ve küresel lisans hakkı alınmaktadır."
+    },
+    {
+      "clauseId": "github_g3",
+      "category": "liability_limitation",
+      "severity": "high",
+      "exactQuote": "GitHub's maximum total liability to you under any theory shall not exceed one hundred dollars ($100).",
+      "rationaleTr": "Şirketin azami mali sorumluluğu 100 dolar ile sınırlandırılmıştır."
+    }
+  ]
+}
