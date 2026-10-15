@@ -1,6 +1,6 @@
 # TermsGuard — 5 Gerçek Hukuki Belge Değerlendirme Raporu
 
-**Tarih:** 2026-10-14T17:43:56.241Z  
+**Tarih:** 2026-10-14T18:41:39.778Z  
 **Kullanılan Sağlayıcı:** Deterministik Mock Sağlayıcı (Test & Çevrimdışı Değerlendirme Modu)  
 **İncelenen Belge Sayısı:** 5  
 **Toplam Altın Standart Madde Sayısı:** 17  

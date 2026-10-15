@@ -1,19 +1,7 @@
-import Ajv, { ErrorObject } from 'ajv';
-import addFormats from 'ajv-formats';
-import riskReportSchema from '../../../schemas/risk-report.schema.json';
-import llmResponseSchema from '../../../schemas/llm-response.schema.json';
+// Compiled standalone validation functions (No runtime 'new Function' or 'eval' -> 100% CSP compliant in Manifest V3)
+// @ts-ignore - handled by compiled-validators.d.ts
+import { validateRiskReport as compiledValidateRiskReport, validateLLMResponse as compiledValidateLLMResponse } from './compiled-validators.js';
 import { RawLLMResponse, RiskReport } from '../types';
-
-const ajv = new Ajv({
-  allErrors: true,
-  strict: false,
-  coerceTypes: true,
-  removeAdditional: false,
-});
-addFormats(ajv);
-
-const validateLLMResponseFn = ajv.compile<RawLLMResponse>(llmResponseSchema);
-const validateRiskReportFn = ajv.compile<RiskReport>(riskReportSchema);
 
 export interface ValidationResult<T> {
   valid: boolean;
@@ -67,9 +55,9 @@ export function parseAndValidateLLMResponse(rawString: string): ValidationResult
     }
   }
 
-  const isValid = validateLLMResponseFn(parsed);
+  const isValid = compiledValidateLLMResponse(parsed);
   if (!isValid) {
-    const errors = formatAjvErrors(validateLLMResponseFn.errors);
+    const errors = formatErrors(compiledValidateLLMResponse.errors);
     return {
       valid: false,
       errors,
@@ -84,9 +72,9 @@ export function parseAndValidateLLMResponse(rawString: string): ValidationResult
 }
 
 export function validateRiskReport(report: unknown): ValidationResult<RiskReport> {
-  const isValid = validateRiskReportFn(report);
+  const isValid = compiledValidateRiskReport(report);
   if (!isValid) {
-    const errors = formatAjvErrors(validateRiskReportFn.errors);
+    const errors = formatErrors(compiledValidateRiskReport.errors);
     return {
       valid: false,
       errors,
@@ -98,10 +86,10 @@ export function validateRiskReport(report: unknown): ValidationResult<RiskReport
   };
 }
 
-function formatAjvErrors(errors?: ErrorObject[] | null): string[] {
+function formatErrors(errors?: Array<{ instancePath?: string; message?: string; keyword?: string }> | null): string[] {
   if (!errors || errors.length === 0) return ['Bilinmeyen şema doğrulama hatası.'];
   return errors.map((err) => {
     const path = err.instancePath || 'root';
-    return `${path} ${err.message ?? ''} (kural: ${err.keyword})`.trim();
+    return `${path} ${err.message ?? ''} (kural: ${err.keyword ?? 'unknown'})`.trim();
   });
 }

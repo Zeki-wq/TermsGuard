@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "node scripts/compile-schemas.js && tsc && vite build",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
     "test:security": "vitest run tests/security",
